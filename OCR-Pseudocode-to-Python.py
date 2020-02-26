@@ -241,7 +241,7 @@ def transcode(code):
         "ENDIF": "",
         "INPUT": "input",
         "ENDFOR": "",
-        "ENDWHILE: "",
+        "ENDWHILE": "",
         '//': "#",
     }
 
