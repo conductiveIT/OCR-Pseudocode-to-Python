@@ -11,8 +11,12 @@ Command line parameters:
 ```--file=foldername/file.ext``` Load the pseudocode from the file.ext in folder foldername
 
 ```--debug``` Output the Pseudocode and the Python it is translated into before executing
+
+## Limitations
+Keywords **must** be in UPPERCASE as the code only checks for words in uppercase.  This is different to the OCR specification - the words are the same, it is just they must be in uppercase.
+
 ## TODO
-- [ ] comments using //
+- [x] comments using //
 - [ ] global keyword
 - [ ] do/until
 - [ ] file access (open/read/write/close/EOF)
