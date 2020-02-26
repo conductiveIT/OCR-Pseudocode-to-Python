@@ -1,0 +1,8 @@
+name: CI
+
+on: [push]
+
+jobs:
+  style:
+    - name: Python Style Checker
+    uses: andymckay/pycodestyle-action@0.1.3
