@@ -48,6 +48,7 @@ def main():
 
 
 def get_variable(code, loc):
+    """ Returns the variable that a method (i.e. .xxxx) has been used on """
     temp_var = ""
     while code[loc] not in (" ", ",", "(", ")", ":"):
         temp_var = code[loc] + temp_var
@@ -56,6 +57,7 @@ def get_variable(code, loc):
 
 
 def update_code(code):
+    """ Handles changing anything more complex than a keyword substitution """
     # Used to handle the SWITCH statement
     switch_var = ""
     default_statement = ""
@@ -217,6 +219,7 @@ def update_code(code):
 
 
 def transcode(code):
+    """ Returns the Python equivalent of the supplied pseudocode """
     # Imports random if random is used
     if "RANDOM" in code:
         code = "import random\n" + code
@@ -247,13 +250,13 @@ def transcode(code):
             code = code.replace(r, replacements[r])
         if r == " = ":
             equals_replaced = True
-    """
-    update_code(code) dynamically changes the string 'code'.  This means that
-    the len(code) in the for loop can be incorrect and so the whole of code
-    may not be searched in one operation.  Therefore we call
-    update_code(code) until no changes have been made - this means that we
-    are done
-    """
+
+    # update_code(code) dynamically changes the string 'code'.  This means that
+    # the len(code) in the for loop can be incorrect and so the whole of code
+    # may not be searched in one operation.  Therefore we call
+    # update_code(code) until no changes have been made - this means that we
+    # are done
+
     new_code = ""
     changed = True
     while changed:
