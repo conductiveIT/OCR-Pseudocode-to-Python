@@ -1,18 +1,34 @@
+// This is a comment
 FUNCTION example_func(a)
 	RETURN 1+a
 
 PROCEDURE example_proc(b)
 	PRINT(b)
 
-ARRAY ben[16]
-ben[3]=FLOAT(5.6)
+filess = OPENREAD("ben.txt")
+PRINT(filess.READLINE())
+filess.CLOSE()
+
+
+
+ARRAY ben[16] // Hello
+ben[3]=FLOAT(5.6) // This is a comment
 PRINT (ben[3])
+
+filess1 = OPENWRITE("ben2.txt")
+filess1.WRITELINE(ben[3])
+filess1.CLOSE()
 
 PRINT(example_func(6))
 example_proc("Procedure")
 
 temp = "hello"
 n = 1
+
+testbool = FALSE
+IF testbool==TRUE THEN
+	PRINT("ok")
+ENDIF
 
 WHILE n < 5
   PRINT (temp.SUBSTRING(n,1)) 
