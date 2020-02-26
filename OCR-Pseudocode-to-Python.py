@@ -179,9 +179,11 @@ def update_code(code):
             rest = line[:index]
             params = rest.split("[")
             var_name = params[0]
-            size = params[1][:-1]
+            size_array = params[1].split("]")
+            size = size_array[0]
+            rest = size_array[1]
 
-            new_line = f"{var_name} = [None] * {size}"
+            new_line = f"{var_name} = [None] * {size}{rest}"
 
             code = code[:i] + new_line + code[i + 6 + index:]
         elif code[i:i + 6] == "APPEND":
@@ -235,6 +237,7 @@ def transcode(code):
         "RANDOM": "random.randint",
         "ENDIF": "",
         "INPUT": "input",
+        '//': "#",
     }
 
     # Replaces everything in the pseudocode with python equivalents
