@@ -86,7 +86,7 @@ def update_code(code):
         elif code[i:i + 6] == "ELSEIF":
             line = code[i + 6:]
             index = line.index("\n")
-            rest = line[:index]
+            rest = line[:index-4]
 
             new_line = f"elif {rest}:"
 
