@@ -243,6 +243,8 @@ def transcode(code):
         "ENDFOR": "",
         "ENDWHILE": "",
         '//': "#",
+        "TRUE": "True",
+        "FALSE": "False",
     }
 
     # Replaces everything in the pseudocode with python equivalents
