@@ -240,6 +240,8 @@ def transcode(code):
         "RANDOM": "random.randint",
         "ENDIF": "",
         "INPUT": "input",
+        "ENDFOR": "",
+        "ENDWHILE: "",
         '//': "#",
     }
 
