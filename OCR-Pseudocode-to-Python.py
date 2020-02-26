@@ -210,7 +210,7 @@ def update_code(code):
             params_s = params_s[params_s.index("(") + 1:index - 1]
 
             params = find_params(params_s)
-            insert_py = f"{params[0]}.insert({params[1]}, {params[2]})" # wibble
+            insert_py = f"{params[0]}.insert({params[1]}, {params[2]})"
 
             code = code[:i] + insert_py + code[i + index:]
     return code
