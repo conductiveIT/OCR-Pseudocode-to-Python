@@ -188,6 +188,26 @@ def update_code(code):
             new_line = f"{var_name} = [None] * {size}{rest}"
 
             code = code[:i] + new_line + code[i + 6 + index:]
+
+        elif code[i:i + 8] == "OPENREAD":
+            line = code[i + 8:]
+            index = line.index("\n")
+            rest = line[:index-1]
+            code = code[:i] + "open" + rest + ",'r')"+code[i + 8 + index:]
+        elif code[i:i + 9] == "OPENWRITE":
+            line = code[i + 9:]
+            index = line.index("\n")
+            rest = line[:index-1]
+            code = code[:i] + "open" + rest + ",'w')"+code[i + 9 + index:]
+        elif code[i:i + 10] == "READLINE()":
+            code = code[:i] + "readline()[:-1]" + code[i + 10:]
+        elif code[i:i + 10] == "WRITELINE(":
+            line = code[i + 10:]
+            index = line.index("\n")
+            rest = line[:index-1]
+            code = code[:i] + "write(str(" + rest + "))"+code[i + 10 + index:]
+        elif code[i:i + 7] == "CLOSE()":
+            code = code[:i] + "close()" + code[i + 7:]            
         elif code[i:i + 6] == "APPEND":
             params_s = code[i:]
             index = params_s.index("\n")
