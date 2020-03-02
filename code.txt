@@ -1,9 +1,14 @@
+GLOBAL bob = 5
 // This is a comment
 FUNCTION example_func(a)
+	PRINT(bob)
+	bob = 20
 	RETURN 1+a
 
 PROCEDURE example_proc(b)
 	PRINT(b)
+	PRINT(bob)
+	bob = 10
 
 filess = OPENREAD("ben.txt")
 WHILE NOT filess.ENDOFFILE()
