@@ -19,6 +19,6 @@ Keywords **must** be in UPPERCASE as the code only checks for words in uppercase
 - [x] comments using //
 - [ ] global keyword
 - [ ] do/until
-- [ ] file access (open/read/write/close/EOF)
+- [x] file access (open/read/write/close/EOF)
 - [ ] n dimensional arrays
 - [ ] byVal and byRef parameter passing
