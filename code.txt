@@ -6,7 +6,9 @@ PROCEDURE example_proc(b)
 	PRINT(b)
 
 filess = OPENREAD("ben.txt")
-PRINT(filess.READLINE())
+WHILE NOT filess.ENDOFFILE()
+	PRINT(filess.READLINE())
+ENDWHILE
 filess.CLOSE()
 
 
