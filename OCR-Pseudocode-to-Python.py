@@ -47,7 +47,7 @@ def main():
         print("----- Output -----")
     # execute the newly created Python code
     exec(code)
-    
+
 
 def get_variable(code, loc):
     """ Returns the variable that a method (i.e. .xxxx) has been used on """
@@ -218,7 +218,7 @@ def update_code(code):
             # we get to the start of the variable name
             (temp_var, temp) = get_variable(code, temp)
 
-            code = code[:temp+1] + f"end_of_file({temp_var})" + code[i + 11:]      
+            code = code[:temp+1] + f"end_of_file({temp_var})" + code[i + 11:]
         elif code[i:i + 6] == "APPEND":
             params_s = code[i:]
             index = params_s.index("\n")
@@ -256,14 +256,14 @@ def transcode(code):
         code = "import random\n" + code
 
     if "ENDOFFILE" in code:
-        code = "import os\n\n"+ \
+        code = "import os\n\n" + \
             "def end_of_file(file):\n" + \
             "\tt = file.tell()\n" + \
             "\tfile.seek(0, os.SEEK_END)\n" + \
             "\tval = (file.tell() == t)\n" + \
             "\tfile.seek(t, os.SEEK_SET)\n" + \
             "\treturn val\n" + code
-            
+
     # Dict of pseudocode keywords/syntax and their python equivalents
     replacements = {
         " = ": " = ",
