@@ -22,6 +22,8 @@ Provides a basic IDE for creating the pseudocode.  Uses OCR_Pseudocode_to_Python
 ## Limitations
 Keywords **must** be in UPPERCASE as the code only checks for words in uppercase.  This is different to the OCR specification - the words are the same, it is just they must be in uppercase.
 
+Blocks of code (if statements / loops / etc.) must be indented as per Python.
+
 ## TODO
 - [x] comments using //
 - [x] global keyword
