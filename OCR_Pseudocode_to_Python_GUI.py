@@ -1,15 +1,14 @@
 import tkinter as tk
-from tkinter import font, filedialog
+from tkinter import font, filedialog, messagebox
 import tkinter.scrolledtext as tkst
-from tkinter import messagebox
 
-
+from threading import Thread
 import subprocess
+
 import sys
 import os
-import re
+
 import queue
-from threading import Thread
 
 keywords = ["GLOBAL", "STR", "INT", "FLOAT", "PRINT", "INPUT", "FOR",
             "NEXT", "WHILE", "ENDWHILE", "DO", "UNTIL", "AND", "OR",
@@ -187,7 +186,7 @@ Find out more at: https://github.com/conductiveIT/OCR-Pseudocode-to-Python")
         self.quit = tk.Button(self.separator, padx=10)
         self.quit["text"] = "Exit"
         self.quit["fg"] = "red"
-        self.quit["command"] = self.quit
+        self.quit["command"] = root.destroy
 
         self.quit.pack({"side": "right"}, padx=10)
 
