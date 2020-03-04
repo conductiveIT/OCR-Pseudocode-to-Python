@@ -9,6 +9,8 @@ global_variables = []
 default_statement = ""
 switch_var = ""
 
+class PseudocodeSyntaxError(Exception):
+    pass
 
 def execute_pseudocode(code, debug=False):
     # change code to Python
@@ -131,8 +133,13 @@ def update_code(code):
         elif code[i:i + 6] == "ELSEIF":
             line = code[i + 6:]
             index = line.index("\n")
-            rest = line[:index-4]
 
+            # Fix for issue #15
+            # We are assuming a THEN and so the code just hangs
+            # if the line is just ELSEIF
+            if (index < 4):
+                raise PseudocodeSyntaxError("Missing condition or THEN in ELSEIF")                
+            rest = line[:index-4]
             new_line = f"elif {rest}:"
 
             code = code[:i] + new_line + code[i + 6 + index:]
@@ -141,6 +148,13 @@ def update_code(code):
         elif code[i:i + 2] == "IF":
             line = code[i + 2:]
             index = line.index("\n")
+
+            # Fix for issue #15
+            # We are assuming a THEN and so the code just hangs
+            # if the line is just IF
+            if (index < 4):
+                raise PseudocodeSyntaxError("Missing condition or THEN in IF")                
+            
             rest = line[:index - 4]
 
             new_line = f"if {rest}:"
