@@ -18,7 +18,7 @@ Command line parameters:
 
 ```python OCR_Pseudocode_to_Python_GUI.py ```
 
-Provides as basic IDE for creating the pseudocode.  Uses OCR_Pseudocode_to_Python.py for the actual execution.
+Provides a basic IDE for creating the pseudocode.  Uses OCR_Pseudocode_to_Python.py for the actual execution.
 ## Limitations
 Keywords **must** be in UPPERCASE as the code only checks for words in uppercase.  This is different to the OCR specification - the words are the same, it is just they must be in uppercase.
 
