@@ -10,57 +10,58 @@ default_statement = ""
 switch_var = ""
 
 
+def execute_pseudocode(code, debug = False):
+    # change code to Python
+    code = transcode(code)
+    
+    if debug:
+        print("----- Executed code ------")
+        print(code)
+        print("----- Ends -----\n")
+        print("----- Output -----")
+
+    # execute the newly created Python code
+    exec(code)
+
+    if debug:
+        print("----- Ends -----\n")
+        
+def load_and_execute_pseudocode(filename, debug):
+    try:
+        with open(filename) as file:
+            code = file.read()
+    except FileNotFoundError:
+        print(filename + " not found.")
+    print("")
+    if debug:
+        print("----- Pseudocode -----")
+        print(code)
+        print("----- Ends -----\n")
+        
+    execute_pseudocode(code, debug)
+    
 def main():
     """
     This function iterates through a properly formatted
     pseudocode text file and returns (roughly) equivalent
-    python code.
-
-    TODO:
-    The main() function probably shouldn't be used for
-    anything other than opening the file and calling
-    a different function to parse through everything.
+    Python code.
     """
 
     filename = "code.txt"
     debug = True
 
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], "f:c:d", ["file=", "code=","debug"])
+        opts, _ = getopt.getopt(sys.argv[1:], "f:d", ["file=","debug"])
     except getopt.GetoptError:
         sys.exit()
     for opt, arg in opts:
-        if opt in ("-c", "--code"):
-            code = arg
-            filename = "CODE"
         if opt in ("-f", "--file"):
             filename = arg
         if opt in ("-d", "--debug"):
             debug = True
 
-    if filename != "CODE":
-        try:
-            with open(filename) as file:
-                code = file.read()
-        except FileNotFoundError:
-            print(filename + " not found.")
-
-    if debug:
-        print("----- Pseudocode -----")
-        print(code)
-        print("----- Ends -----\n")
-    # change code to Python
-    code = transcode(code)
-
-    if debug:
-        print("----- Executed code ------")
-        print(code)
-        print("----- Ends -----\n")
-        print("----- Output -----")
-    # execute the newly created Python code
-    exec(code)
-
-
+    load_and_execute_pseudocode(filename, debug)
+    
 def get_variable(code, loc):
     """ Returns the variable that a method (i.e. .xxxx) has been used on """
     temp_var = ""
@@ -103,6 +104,10 @@ def update_code(code):
             new_line = f"for {variable} in range({start},{end}):"
 
             code = code[:i] + new_line + code[i + index:]
+        elif code[i:i + 4] == "NEXT":
+            line = code[i:]
+            index = line.index("\n")
+            code = code[:i] + code[i+index:]
         elif code[i:i + 5] == "WHILE":
             line = code[i + 5:]
             index = line.index("\n")
@@ -365,6 +370,8 @@ def find_params(s):
         i += 1
     return params
 
-
+def ben():
+    print("ben")
+    
 if __name__ == "__main__":
     main()
