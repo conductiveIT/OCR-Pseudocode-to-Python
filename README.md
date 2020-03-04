@@ -2,6 +2,8 @@
 This is a Python program that translates code written in OCR pseudocode (as specificed in pages 31 to 35 of the specification at [OCR A Level Computer Science Specification](https://ocr.org.uk/Images/170844-specification-accredited-a-level-gce-computer-science-h446.pdf)) and executes it.
 
 There is also a basic IDE that provides some syntax highlighting/load/save/execute/debug.
+
+This has nothing to do with OCR and is not endorsed by them.
 ## Based on
 This is based on [CSP-PseudocodeRunner](https://github.com/gcpreston/csp-pseudocode-runner).
 ## Usage
