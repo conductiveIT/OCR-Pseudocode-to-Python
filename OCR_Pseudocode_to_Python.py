@@ -10,10 +10,10 @@ default_statement = ""
 switch_var = ""
 
 
-def execute_pseudocode(code, debug = False):
+def execute_pseudocode(code, debug=False):
     # change code to Python
     code = transcode(code)
-    
+
     if debug:
         print("----- Executed code ------")
         print(code)
@@ -25,7 +25,8 @@ def execute_pseudocode(code, debug = False):
 
     if debug:
         print("----- Ends -----\n")
-        
+
+
 def load_and_execute_pseudocode(filename, debug):
     try:
         with open(filename) as file:
@@ -37,9 +38,10 @@ def load_and_execute_pseudocode(filename, debug):
         print("----- Pseudocode -----")
         print(code)
         print("----- Ends -----\n")
-        
+
     execute_pseudocode(code, debug)
-    
+
+
 def main():
     """
     This function iterates through a properly formatted
@@ -51,7 +53,7 @@ def main():
     debug = True
 
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], "f:d", ["file=","debug"])
+        opts, _ = getopt.getopt(sys.argv[1:], "f:d", ["file=", "debug"])
     except getopt.GetoptError:
         sys.exit()
     for opt, arg in opts:
@@ -61,7 +63,8 @@ def main():
             debug = True
 
     load_and_execute_pseudocode(filename, debug)
-    
+
+
 def get_variable(code, loc):
     """ Returns the variable that a method (i.e. .xxxx) has been used on """
     temp_var = ""
@@ -82,7 +85,7 @@ def add_global_variables():
 
 def update_code(code):
     """ Handles changing anything more complex than a keyword substitution """
-    global global_variabless, switch_var, default_statement
+    global global_variables, switch_var, default_statement
 
     # Selects all cases of things with parameters and treats them appropiately
     for i in range(len(code)):
@@ -93,6 +96,15 @@ def update_code(code):
             global_variables.append(line_s[0])
 
             code = code[:i] + code[i+7:]
+        elif code[i:i + 2] == "DO":
+            until_pos = code[i + 2:].find('UNTIL')
+            until_str_end = code[i + 2 + until_pos + 6:].index('\n')
+            until_str = code[i + 2 + until_pos + 6: i +
+                             2 + until_pos + 6 + until_str_end]
+
+            code = code[: i] + "while not (" + until_str+"):" + \
+                   code[i + 2: i + 2 + until_pos] + \
+                   code[i + 2 + until_pos + 6 + until_str_end:]
         elif code[i:i + 3] == "FOR":
             line = code[i:]
             index = line.index("\n")
@@ -370,8 +382,5 @@ def find_params(s):
         i += 1
     return params
 
-def ben():
-    print("ben")
-    
 if __name__ == "__main__":
     main()
