@@ -22,7 +22,7 @@ Keywords **must** be in UPPERCASE as the code only checks for words in uppercase
 
 ## TODO
 - [x] comments using //
-- [ ] global keyword
+- [x] global keyword
 - [ ] do/until
 - [x] file access (open/read/write/close/EOF)
 - [ ] n dimensional arrays
