@@ -10,6 +10,10 @@ default_statement = ""
 switch_var = ""
 
 
+class PseudocodeSyntaxError(Exception):
+    pass
+
+
 def execute_pseudocode(code, debug=False):
     # change code to Python
     code = transcode(code)
@@ -75,6 +79,7 @@ def get_variable(code, loc):
 
 
 def add_global_variables():
+    """ Adds the declared global variables - to be used in a proc/function """
     global global_variables
     new_line = ""
     if (len(global_variables) > 0):
@@ -90,6 +95,7 @@ def update_code(code):
     # Selects all cases of things with parameters and treats them appropiately
     for i in range(len(code)):
         if code[i:i + 6] == "GLOBAL":
+            # Expects GLOBAL var = value\n
             line = code[i+7:]
             index = line.index("\n")
             line_s = line[:index].split("=")
@@ -97,15 +103,20 @@ def update_code(code):
 
             code = code[:i] + code[i+7:]
         elif code[i:i + 2] == "DO":
+            # Expects DO\n
+            # Find the matching UNTIL
             until_pos = code[i + 2:].find('UNTIL')
             until_str_end = code[i + 2 + until_pos + 6:].index('\n')
+            # Strip the matching UNTIL out of the code
             until_str = code[i + 2 + until_pos + 6: i +
                              2 + until_pos + 6 + until_str_end]
 
+            # Add a while not to mimic the DO/UNTIL
             code = code[: i] + "while not (" + until_str+"):" + \
                    code[i + 2: i + 2 + until_pos] + \
                    code[i + 2 + until_pos + 6 + until_str_end:]
         elif code[i:i + 3] == "FOR":
+            # Expects FOR var = start TO end\n
             line = code[i:]
             index = line.index("\n")
             linesplit = line[:index].split()
@@ -117,10 +128,12 @@ def update_code(code):
 
             code = code[:i] + new_line + code[i + index:]
         elif code[i:i + 4] == "NEXT":
+            # Expects NEXT var\n
             line = code[i:]
             index = line.index("\n")
             code = code[:i] + code[i+index:]
         elif code[i:i + 5] == "WHILE":
+            # Expects WHILE condition\n
             line = code[i + 5:]
             index = line.index("\n")
             rest = line[:index]
@@ -129,24 +142,42 @@ def update_code(code):
 
             code = code[:i] + new_line + code[i + 5 + index:]
         elif code[i:i + 6] == "ELSEIF":
+            # Expects ELISEIF condition THEN\n
             line = code[i + 6:]
             index = line.index("\n")
-            rest = line[:index-4]
 
+            # Fix for issue #15
+            # We are assuming a THEN and so the code just hangs
+            # if the line is just ELSEIF
+            if (index < 4):
+                raise PseudocodeSyntaxError("Missing condition or THEN in ELSEIF")
+            rest = line[:index-4]
             new_line = f"elif {rest}:"
 
             code = code[:i] + new_line + code[i + 6 + index:]
         elif code[i:i + 4] == "ELSE":
+            # Expects ELSE\n
+            # Part of this code rather than the simple substitution otherwise
+            # it turns ELSEIF into elseIF which causes a problem
             code = code[:i] + "else:" + code[i + 4:]
         elif code[i:i + 2] == "IF":
+            # Expects IF condition THEN\n
             line = code[i + 2:]
             index = line.index("\n")
+
+            # Fix for issue #15
+            # We are assuming a THEN and so the code just hangs
+            # if the line is just IF
+            if (index < 4):
+                raise PseudocodeSyntaxError("Missing condition or THEN in IF")
+
             rest = line[:index - 4]
 
             new_line = f"if {rest}:"
 
             code = code[:i] + new_line + code[i + 2 + index:]
         elif code[i:i + 9] == "ENDSWITCH":
+            # Expects ENDSWITCH\n
             line = code[i + 9:]
             index = line.index("\n")
             switch_var = ""
@@ -154,27 +185,37 @@ def update_code(code):
 
             code = code[:i] + code[i + 9 + index:]
         elif code[i:i + 6] == "SWITCH":
+            # Expects SWITCH var\n
             line = code[i + 7:]
             index = line.index("\n")
             switch_var = line[:index - 1]
 
             code = code[:i] + code[i + 7 + index:]
         elif code[i:i + 4] == "CASE":
+            # Expects CASE value\n
+            # No switch/case in Python so turn each CASE into an if statement
             line = code[i + 4:]
             index = line.index("\n")
             rest = line[:index - 1]
 
             new_line = f"if {switch_var}=={rest}:"
+
+            # To fake the DEFAULT, we need to add negative match for each CASE
+            # together and then use that as the final if
             default_statement = default_statement + \
                 f" {switch_var} != {rest} and "
 
             code = code[:i] + new_line + code[i + 4 + index:]
         elif code[i:i + 7] == "DEFAULT":
+            # Expects DEFAULT\n
             line = code[i + 7:]
             index = line.index("\n")
+            # Fake the default by using the previously built negative CASE
+            # matches
             code = code[:i] + "if " + \
                 default_statement[:-4] + ":" + code[i + 7 + index:]
         elif code[i:i + 7] == ".LENGTH":
+            # Expects var.LENGTH
             temp = i - 1
             temp_var = ""
 
@@ -186,6 +227,7 @@ def update_code(code):
 
             code = code[:temp + 1] + new_line + code[i + 7:]
         elif code[i:i + 11] == ".SUBSTRING(":
+            # Expects var.SUBSTRING(start,end)
             temp = i - 1
             temp_var = ""
 
@@ -203,8 +245,12 @@ def update_code(code):
 
             code = code[:temp + 1] + new_line + code[i + 11 + index + 1:]
         elif code[i:i + 3] == "STR":
+            # Expects STR(var)
+            # Part of this code rather than the simple substitution otherwise
+            # it turns SUBSTRING into SUBstrING which causes a problem
             code = code[:i] + "str" + code[i + 3:]
         elif code[i:i + 8] == "FUNCTION":
+            # Expects FUNCTION func_name(parameters)\n
             line = code[i + 8:]
             index = line.index("\n")
             rest = line[:index]
@@ -214,6 +260,7 @@ def update_code(code):
 
             code = code[:i] + new_line + code[i + 8 + index:]
         elif code[i:i + 9] == "PROCEDURE":
+            # Expects PROCEDURE proc_name(parameters)
             line = code[i + 9:]
             index = line.index("\n")
             rest = line[:index]
@@ -224,6 +271,7 @@ def update_code(code):
 
             code = code[:i] + new_line + code[i + 9 + index:]
         elif code[i:i + 5] == "ARRAY":
+            # Expects ARRAY var[size]
             line = code[i + 6:]
             index = line.index("\n")
             rest = line[:index]
@@ -238,33 +286,40 @@ def update_code(code):
             code = code[:i] + new_line + code[i + 6 + index:]
 
         elif code[i:i + 8] == "OPENREAD":
+            # Expects filevar = OPENREAD(filename)
             line = code[i + 8:]
             index = line.index("\n")
             rest = line[:index-1]
             code = code[:i] + "open" + rest + ",'r')"+code[i + 8 + index:]
         elif code[i:i + 9] == "OPENWRITE":
+            # Expects filevar = OPENWRITE(filename)
             line = code[i + 9:]
             index = line.index("\n")
             rest = line[:index-1]
             code = code[:i] + "open" + rest + ",'w')"+code[i + 9 + index:]
         elif code[i:i + 10] == "READLINE()":
+            # Expects var = filevar.READLINE()
             code = code[:i] + "readline()[:-1]" + code[i + 10:]
         elif code[i:i + 10] == "WRITELINE(":
+            # Expects filevar.WRITELINE(var)
             line = code[i + 10:]
             index = line.index("\n")
             rest = line[:index-1]
             code = code[:i] + "write(str(" + rest + "))"+code[i + 10 + index:]
         elif code[i:i + 7] == "CLOSE()":
+            # Expects filevar.CLOSE()
             code = code[:i] + "close()" + code[i + 7:]
         elif code[i:i + 11] == "ENDOFFILE()":
+            # Expects filevar.ENDOFFILE()
             temp = i - 2
             temp_var = ""
 
-            # Code will be variablename.SUBSTRING so reverse back until
+            # Code will be variablename.ENDOFFILE() so reverse back until
             # we get to the start of the variable name
             (temp_var, temp) = get_variable(code, temp)
 
             code = code[:temp+1] + f"end_of_file({temp_var})" + code[i + 11:]
+        '''
         elif code[i:i + 6] == "APPEND":
             params_s = code[i:]
             index = params_s.index("\n")
@@ -292,6 +347,7 @@ def update_code(code):
             insert_py = f"{params[0]}.insert({params[1]}, {params[2]})"
 
             code = code[:i] + insert_py + code[i + index:]
+        '''
     return code
 
 
