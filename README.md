@@ -27,7 +27,7 @@ Blocks of code (if statements / loops / etc.) must be indented as per Python.
 ## TODO
 - [x] comments using //
 - [x] global keyword
-- [ ] do/until
+- [x] do/until
 - [x] file access (open/read/write/close/EOF)
 - [ ] n dimensional arrays
 - [ ] byVal and byRef parameter passing
