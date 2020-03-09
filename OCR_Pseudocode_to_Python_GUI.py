@@ -133,22 +133,23 @@ Find out more at: https://github.com/conductiveIT/OCR-Pseudocode-to-Python")
         self.execute(debug=True)
 
     def load(self):
-        filename = filedialog.askopenfilename(initialdir = "/",
-                                title = "Select file",
-                                filetypes = (("Pseudocode Files", "*.code"), ("All files", "*.*")))
-        try:
-            with open(filename) as file:
-                code = file.read()
-        except FileNotFoundError:
-                code = filename + " not found."
-        self.editor.delete('1.0', tk.END)
-        self.editor.insert('1.0', code)
-        self.editor.OnEntryClick(None)
+        filename = filedialog.askopenfilename(initialdir="/",
+                                title="Select file",
+                                filetypes=(("Pseudocode Files", "*.code"), ("All files", "*.*")))
+        if (filename != ''):
+            try:
+                with open(filename) as file:
+                    code = file.read()
+                    self.editor.delete('1.0', tk.END)
+                    self.editor.insert('1.0', code)
+                    self.editor.OnEntryClick(None)
+            except FileNotFoundError:
+                    messagebox.showerror("Error", "File not found")
 
     def save(self):
-        filename = filedialog.asksaveasfilename(initialdir = "/",
-                        title = "Select file",
-                        filetypes = (("Pseudocode Files", "*.code"), ("All files", "*.*")))
+        filename = filedialog.asksaveasfilename(initialdir="/",
+                        title="Select file",
+                        filetypes=(("Pseudocode Files", "*.code"), ("All files", "*.*")))
         with open(filename, "w") as file:
             file.write(self.editor.get('1.0', tk.END))
 
