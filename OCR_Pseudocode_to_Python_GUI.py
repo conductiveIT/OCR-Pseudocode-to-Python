@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font, filedialog, messagebox, Menu
+from tkinter import font, filedialog, messagebox, Menu, TclError
 import tkinter.scrolledtext as tkst
 
 from threading import Thread
@@ -225,6 +225,7 @@ Find out more at: https://github.com/conductiveIT/OCR-Pseudocode-to-Python")
 
 
 class CustomText(tk.Text):
+    in_control_a = False
     '''A text widget with a new method, highlight_pattern()
 
     example:
@@ -238,11 +239,20 @@ class CustomText(tk.Text):
     '''
     def __init__(self, *args, **kwargs):
         tkst.ScrolledText.__init__(self, *args, **kwargs)
+
         self.bind("<KeyRelease>", self.OnEntryClick)  # keyup
+        self.bind("<Control-a>", self.select_all)
         self.bind('<Button-3>', self.rClicker, add='')
         self.tag_configure("keyword", foreground="orange")
         self.tag_configure("string", foreground="green")
         self.tag_configure("comment", foreground="red")
+
+    def select_all(self, event):
+        # Added to fix issue #21
+        # Set flag if the user has done a ctrl-a
+        self.in_control_a = True
+        event.widget.tag_add("sel", "1.0", "end")
+        return "break"
 
     def highlight_pattern(self, pattern, tag, start="0.0", end="end",
                           regexp=False):
@@ -271,8 +281,8 @@ class CustomText(tk.Text):
             self.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
             self.tag_add(tag, "matchStart", "matchEnd")
 
-    def OnEntryClick(self, event):
-        # Removed all the existing tags
+    def highlight_code(self):
+        # Remove all the existing tags
         for tag in self.tag_names():
             self.tag_remove(tag, "1.0", "end")
 
@@ -283,6 +293,17 @@ class CustomText(tk.Text):
         self.highlight_pattern(pattern="\".*\"", tag="string", regexp=True)
         # Highlight any comments
         self.highlight_pattern(pattern='.*#.*$', tag="comment", regexp=True)
+
+    def OnEntryClick(self, event):
+        # Added to fix issue #21
+        # Ignore left and right control keys and anything if we have
+        # just done a ctrl-a
+        if (event.keysym != "Control_L" and
+                event.keysym != "Control_R" and
+                self.in_control_a is False):
+            self.highlight_code()
+        else:
+            self.in_control_a = False
 
     def rClicker(self, e):
         ''' right click context menu for all Tk Entry and Text widgets
@@ -298,6 +319,7 @@ class CustomText(tk.Text):
 
             def rClick_Paste(e):
                 e.widget.event_generate('<Control-v>')
+                self.highlight_code()
 
             e.widget.focus()
 
