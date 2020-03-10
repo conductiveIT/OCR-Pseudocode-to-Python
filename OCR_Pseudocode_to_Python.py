@@ -98,7 +98,7 @@ def update_code(code):
             # Expects GLOBAL var = value\n
             line = code[i+7:]
             index = line.index("\n")
-            line_s = line[:index].split("=")
+            line_s = line[:index].rstrip().split("=")
             global_variables.append(line_s[0])
 
             code = code[:i] + code[i+7:]
@@ -109,7 +109,7 @@ def update_code(code):
             until_str_end = code[i + 2 + until_pos + 6:].index('\n')
             # Strip the matching UNTIL out of the code
             until_str = code[i + 2 + until_pos + 6: i +
-                             2 + until_pos + 6 + until_str_end]
+                             2 + until_pos + 6 + until_str_end].rstrip()
 
             # Add a while not to mimic the DO/UNTIL
             code = code[: i] + "while not (" + until_str+"):" + \
@@ -119,7 +119,7 @@ def update_code(code):
             # Expects FOR var = start TO end\n
             line = code[i:]
             index = line.index("\n")
-            linesplit = line[:index].split()
+            linesplit = line[:index].rstrip().split()
             variable = linesplit[1]
             start = linesplit[3]
             end = int(linesplit[5]) + 1
@@ -136,7 +136,7 @@ def update_code(code):
             # Expects WHILE condition\n
             line = code[i + 5:]
             index = line.index("\n")
-            rest = line[:index]
+            rest = line[:index].rstrip()
 
             new_line = f"while {rest}:"
 
@@ -151,7 +151,7 @@ def update_code(code):
             # if the line is just ELSEIF
             if (index < 4):
                 raise PseudocodeSyntaxError("Missing condition or THEN in ELSEIF")
-            rest = line[:index-4]
+            rest = line[:index-4].rstrip()
             new_line = f"elif {rest}:"
 
             code = code[:i] + new_line + code[i + 6 + index:]
@@ -164,14 +164,15 @@ def update_code(code):
             # Expects IF condition THEN\n
             line = code[i + 2:]
             index = line.index("\n")
-
+            
             # Fix for issue #15
             # We are assuming a THEN and so the code just hangs
             # if the line is just IF
             if (index < 4):
                 raise PseudocodeSyntaxError("Missing condition or THEN in IF")
 
-            rest = line[:index - 4]
+            if_line = line[:index].rstrip()
+            rest = if_line[:- 4]
 
             new_line = f"if {rest}:"
 
@@ -188,7 +189,7 @@ def update_code(code):
             # Expects SWITCH var\n
             line = code[i + 7:]
             index = line.index("\n")
-            switch_var = line[:index - 1]
+            switch_var = line[:index - 1].rstrip()
 
             code = code[:i] + code[i + 7 + index:]
         elif code[i:i + 4] == "CASE":
@@ -196,7 +197,7 @@ def update_code(code):
             # No switch/case in Python so turn each CASE into an if statement
             line = code[i + 4:]
             index = line.index("\n")
-            rest = line[:index - 1]
+            rest = line[:index - 1].rstrip()
 
             new_line = f"if {switch_var}=={rest}:"
 
@@ -238,7 +239,7 @@ def update_code(code):
             line = code[i + 11:]
             index = line.index(")")
             rest = line[:index]
-            params = rest.split(",")
+            params = rest.rstrip().split(",")
             start = params[0]
             end = params[1]
             new_line = f"{temp_var}[{start}:{start}+{end}]"
@@ -253,7 +254,7 @@ def update_code(code):
             # Expects FUNCTION func_name(parameters)\n
             line = code[i + 8:]
             index = line.index("\n")
-            rest = line[:index]
+            rest = line[:index].rstrip()
 
             new_line = f"def {rest}:"
             new_line = new_line + add_global_variables()
@@ -263,7 +264,7 @@ def update_code(code):
             # Expects PROCEDURE proc_name(parameters)
             line = code[i + 9:]
             index = line.index("\n")
-            rest = line[:index]
+            rest = line[:index].rstrip()
 
             new_line = f"def {rest}:"
 
@@ -274,7 +275,7 @@ def update_code(code):
             # Expects ARRAY var[size]
             line = code[i + 6:]
             index = line.index("\n")
-            rest = line[:index]
+            rest = line[:index].rstrip()
             params = rest.split("[")
             var_name = params[0]
             size_array = params[1].split("]")
@@ -289,13 +290,13 @@ def update_code(code):
             # Expects filevar = OPENREAD(filename)
             line = code[i + 8:]
             index = line.index("\n")
-            rest = line[:index-1]
+            rest = line[:index-1].rstrip()
             code = code[:i] + "open" + rest + ",'r')"+code[i + 8 + index:]
         elif code[i:i + 9] == "OPENWRITE":
             # Expects filevar = OPENWRITE(filename)
             line = code[i + 9:]
             index = line.index("\n")
-            rest = line[:index-1]
+            rest = line[:index-1].rstrip()
             code = code[:i] + "open" + rest + ",'w')"+code[i + 9 + index:]
         elif code[i:i + 10] == "READLINE()":
             # Expects var = filevar.READLINE()
@@ -304,7 +305,7 @@ def update_code(code):
             # Expects filevar.WRITELINE(var)
             line = code[i + 10:]
             index = line.index("\n")
-            rest = line[:index-1]
+            rest = line[:index-1].rstrip()
             code = code[:i] + "write(str(" + rest + "))"+code[i + 10 + index:]
         elif code[i:i + 7] == "CLOSE()":
             # Expects filevar.CLOSE()
