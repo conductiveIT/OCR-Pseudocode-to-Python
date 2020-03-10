@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font, filedialog, messagebox
+from tkinter import font, filedialog, messagebox, Menu
 import tkinter.scrolledtext as tkst
 
 from threading import Thread
@@ -239,6 +239,7 @@ class CustomText(tk.Text):
     def __init__(self, *args, **kwargs):
         tkst.ScrolledText.__init__(self, *args, **kwargs)
         self.bind("<KeyRelease>", self.OnEntryClick)  # keyup
+        self.bind('<Button-3>', self.rClicker, add='')
         self.tag_configure("keyword", foreground="orange")
         self.tag_configure("string", foreground="green")
         self.tag_configure("comment", foreground="red")
@@ -282,6 +283,42 @@ class CustomText(tk.Text):
         self.highlight_pattern(pattern="\".*\"", tag="string", regexp=True)
         # Highlight any comments
         self.highlight_pattern(pattern='.*#.*$', tag="comment", regexp=True)
+
+    def rClicker(self, e):
+        ''' right click context menu for all Tk Entry and Text widgets
+            from: https://stackoverflow.com/questions/4266566/stardand-context-menu-in-python-tkinter-text-widget-when-mouse-right-button-is-p/48915243
+        '''
+
+        try:
+            def rClick_Copy(e, apnd=0):
+                e.widget.event_generate('<Control-c>')
+
+            def rClick_Cut(e):
+                e.widget.event_generate('<Control-x>')
+
+            def rClick_Paste(e):
+                e.widget.event_generate('<Control-v>')
+
+            e.widget.focus()
+
+            nclst = [
+                   (' Cut', lambda e=e: rClick_Cut(e)),
+                   (' Copy', lambda e=e: rClick_Copy(e)),
+                   (' Paste', lambda e=e: rClick_Paste(e)),
+                   ]
+
+            rmenu = Menu(None, tearoff=0, takefocus=0)
+
+            for (txt, cmd) in nclst:
+                rmenu.add_command(label=txt, command=cmd)
+
+            rmenu.tk_popup(e.x_root+40, e.y_root+10, entry="0")
+
+        except TclError:
+            print(' - rClick menu, something wrong')
+            pass
+
+        return "break"
 
 root = tk.Tk()
 root.title("OCR Pseudocode IDE")
