@@ -122,7 +122,7 @@ def update_code(code):
             linesplit = line[:index].rstrip().split()
             variable = linesplit[1]
             start = linesplit[3]
-            end = int(linesplit[5]) + 1
+            end = linesplit[5] + " + 1"
 
             new_line = f"for {variable} in range({start},{end}):"
 
