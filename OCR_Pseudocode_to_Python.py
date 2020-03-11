@@ -164,7 +164,7 @@ def update_code(code):
             # Expects IF condition THEN\n
             line = code[i + 2:]
             index = line.index("\n")
-            
+
             # Fix for issue #15
             # We are assuming a THEN and so the code just hangs
             # if the line is just IF
@@ -276,6 +276,16 @@ def update_code(code):
             line = code[i + 6:]
             index = line.index("\n")
             rest = line[:index].rstrip()
+
+            left_square = rest.index("[")
+            var_name = rest[:left_square]
+            # format [[1 for i in range(10)] for j in range(10)]
+            # the_array = "[None for i in range(10)] for j in range(10)]
+            # Multi-dimensional arrays
+            # if (rest[left_square:].index("][") != -1):
+            #    arrays = rest[left_square:].split("][")
+            #    for a in arrays:
+
             params = rest.split("[")
             var_name = params[0]
             size_array = params[1].split("]")
@@ -358,6 +368,8 @@ def transcode(code):
     if "RANDOM" in code:
         code = "import random\n" + code
 
+    # No EOF in Python so we have to fake it with a function of our own
+    # Only include it if the user has used the ENDOFFILE pseudocode function
     if "ENDOFFILE" in code:
         code = "import os\n\n" + \
             "def end_of_file(file):\n" + \
@@ -367,7 +379,7 @@ def transcode(code):
             "\tfile.seek(t, os.SEEK_SET)\n" + \
             "\treturn val\n" + code
 
-    # Dict of pseudocode keywords/syntax and their python equivalents
+    # Dict of pseudocode keywords/syntax and their Python equivalents
     replacements = {
         " = ": " = ",
         " == ": " == ",
@@ -404,6 +416,9 @@ def transcode(code):
     # may not be searched in one operation.  Therefore we call
     # update_code(code) until no changes have been made - this means that we
     # are done
+    # TODO: We should be building a new String with the Python code, not
+    # updating the one with the pseudocode in.  This should mean that we only
+    # need to run the update_code() once
 
     new_code = ""
     changed = True
