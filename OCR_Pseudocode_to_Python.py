@@ -276,24 +276,30 @@ def update_code(code):
             line = code[i + 6:]
             index = line.index("\n")
             rest = line[:index].rstrip()
-
+           
             left_square = rest.index("[")
             var_name = rest[:left_square]
-            # format [[1 for i in range(10)] for j in range(10)]
-            # the_array = "[None for i in range(10)] for j in range(10)]
+
             # Multi-dimensional arrays
-            # if (rest[left_square:].index("][") != -1):
-            #    arrays = rest[left_square:].split("][")
-            #    for a in arrays:
+            try:
+                is_multi = rest[left_square:].index("][") != -1
+            except ValueError:
+                is_multi = False
 
-            params = rest.split("[")
-            var_name = params[0]
-            size_array = params[1].split("]")
-            size = size_array[0]
-            rest = size_array[1]
+            if (is_multi is True):
+                the_array = "None"
+                arrays = rest[left_square:].split("][")
 
-            new_line = f"{var_name} = [None] * {size}{rest}"
+                for a in reversed(arrays):
+                    a = a.strip("[")
+                    a = a.strip("]")
+                    the_array = "[" + the_array + " for i in range("+a+")]"
+            else:
+                right_square = rest.index("]")
+                size = rest[left_square+1:right_square]
+                the_array = "[None for i in range("+size+")]"
 
+            new_line = f"{var_name} = {the_array}"
             code = code[:i] + new_line + code[i + 6 + index:]
 
         elif code[i:i + 8] == "OPENREAD":
