@@ -15,7 +15,7 @@ keywords = ["GLOBAL", "STR", "INT", "FLOAT", "PRINT", "INPUT", "FOR",
             "NOT", "IF", "ELSE", "ELSEIF", "ENDIF", "SWITCH", "CASE",
             "DEFAULT", "LENGTH", "SUBSTRING", "FUNCTION", "ENDFUNCTION",
             "PROCEDURE", "ENDPROCEDURE", "ARRAY", "OPENREAD", "OPENWRITE",
-            "ENDOFFILE", "CLOSE", "TO"]
+            "ENDOFFILE", "CLOSE", "TO", "THEN"]
 
 
 def run(cmd):
