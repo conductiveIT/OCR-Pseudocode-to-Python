@@ -290,7 +290,7 @@ class CustomText(tk.Text):
         self.highlight_pattern(pattern="([[:space:]]|^)("+"|".join(keywords)+")",
                                tag="keyword", regexp=True)
         # Highlight any strings
-        self.highlight_pattern(pattern="\".*\"", tag="string", regexp=True)
+        self.highlight_pattern(pattern="\"[^\"]*\"", tag="string", regexp=True)
         # Highlight any comments
         self.highlight_pattern(pattern='.*#.*$', tag="comment", regexp=True)
 
