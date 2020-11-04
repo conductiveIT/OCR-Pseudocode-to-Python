@@ -407,6 +407,8 @@ def transcode(code):
         "DIV": "//",        
         "TRUE": "True",
         "FALSE": "False",
+        "LOWER": "lower",
+        "UPPER": "upper"
     }
 
     # Replaces everything in the pseudocode with python equivalents
