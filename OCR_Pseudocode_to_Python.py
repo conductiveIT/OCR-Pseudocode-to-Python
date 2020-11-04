@@ -394,7 +394,6 @@ def transcode(code):
         " OR ": " or ",
         "NOT": "not",
         "MOD": "%",
-        "DIV": "//",
         "INT": "int",
         "FLOAT": "float",
         " IN ": " in ",
@@ -405,6 +404,7 @@ def transcode(code):
         "ENDFOR": "",
         "ENDWHILE": "",
         '//': "#",
+        "DIV": "//",        
         "TRUE": "True",
         "FALSE": "False",
     }
