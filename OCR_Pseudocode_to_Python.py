@@ -408,7 +408,9 @@ def transcode(code):
         "TRUE": "True",
         "FALSE": "False",
         "LOWER": "lower",
-        "UPPER": "upper"
+        "UPPER": "upper",
+        "ENDFUNCTION": "",
+        "ENDPROCEDURE": "",
     }
 
     # Replaces everything in the pseudocode with python equivalents
