@@ -25,7 +25,7 @@ def execute_pseudocode(code, debug=False):
         print("----- Output -----")
 
     # execute the newly created Python code
-    exec(code)
+    exec(code, globals())
 
     if debug:
         print("----- Ends -----\n")
