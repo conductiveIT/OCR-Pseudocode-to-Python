@@ -85,7 +85,8 @@ class Console(tk.Frame):
     def readFromProccessOut(self):
         "To be executed in a separate thread to make read non-blocking"
         while self.alive:
-            data = self.p.stdout.raw.read(1024).decode()
+            # Fix for issue 39
+            data = self.p.stdout.raw.read(1024).decode('windows-1252')
             self.outQueue.put(data)
 
     def readFromProccessErr(self):
