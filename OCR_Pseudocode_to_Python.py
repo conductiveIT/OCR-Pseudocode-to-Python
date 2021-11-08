@@ -387,6 +387,12 @@ def update_code(code):
 
 def transcode(code):
     """ Returns the Python equivalent of the supplied pseudocode """
+    
+    # Fix for #47
+    # global_variables needs to be reset between each run
+    global global_variables
+    global_variables = []
+    
     # Imports random if random is used
     if "RANDOM" in code:
         code = "import random\n" + code
