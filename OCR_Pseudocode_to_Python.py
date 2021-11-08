@@ -151,7 +151,16 @@ def update_code(code):
             # if the line is just ELSEIF
             if (index < 4):
                 raise PseudocodeSyntaxError("Missing condition or THEN in ELSEIF")
-            rest = line[:index-4].rstrip()
+
+            if_line = line[:index].rstrip()
+            # Fix for issue #45
+            # Raise an error if there is no THEN at the end rather than randomly
+            # removing the last four characters
+            if if_line[len(if_line)-4:] != "THEN":
+                raise PseudocodeSyntaxError("Missing THEN at the end of the ELSEIF")
+            else:
+                rest = if_line[:-4]
+                
             new_line = f"elif {rest}:"
 
             code = code[:i] + new_line + code[i + 6 + index:]
@@ -170,10 +179,18 @@ def update_code(code):
             # if the line is just IF
             if (index < 4):
                 raise PseudocodeSyntaxError("Missing condition or THEN in IF")
-
+ 
             if_line = line[:index].rstrip()
-            rest = if_line[:- 4]
 
+            # Fix for issue #45
+            # Raise an error if there is no THEN at the end rather than randomly
+            # removing the last four characters
+            
+            if if_line[len(if_line)-4:] != "THEN":                
+                raise PseudocodeSyntaxError("Missing THEN at the end of the IF")
+            else:
+                rest = if_line[:-4]
+ 
             new_line = f"if {rest}:"
 
             code = code[:i] + new_line + code[i + 2 + index:]
