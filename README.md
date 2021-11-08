@@ -24,6 +24,8 @@ Keywords **must** be in UPPERCASE as the code only checks for words in uppercase
 
 Blocks of code (if statements / loops / etc.) must be indented as per Python.
 
+Arrays use the array[m][n] rather than the array[m,n] format
+
 ## TODO
 - [x] comments using //
 - [x] global keyword
