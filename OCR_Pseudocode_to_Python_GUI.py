@@ -290,7 +290,7 @@ class CustomText(tk.Text):
             self.tag_remove(tag, "1.0", "end")
 
         # Highlight the keywords
-        self.highlight_pattern(pattern="([[:space:]]|^)("+"|".join(keywords)+")",
+        self.highlight_pattern(pattern="([[:space:]|\.]|^)("+"|".join(keywords)+")",
                                tag="keyword", regexp=True)
         # Highlight any strings
         self.highlight_pattern(pattern="\"[^\"]*\"", tag="string", regexp=True)
