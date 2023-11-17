@@ -144,7 +144,8 @@ Find out more at: https://github.com/conductiveIT/OCR-Pseudocode-to-Python")
                     code = file.read()
                     self.editor.delete('1.0', tk.END)
                     self.editor.insert('1.0', code)
-                    self.editor.OnEntryClick(None)
+                # Added to fix #49
+                self.editor.highlight_code()
             except FileNotFoundError:
                     messagebox.showerror("Error", "File not found")
 
